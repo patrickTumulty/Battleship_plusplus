@@ -28,7 +28,6 @@ void updateBoard(int** board, int row, int col, int size);
 void printScore(int p1Score, int p2Score, int size);
 int * AIcoordinates(int ** board, int size, std::string message);
 
-
 // globals // =====================================
 
 int p1 = 0;
@@ -36,6 +35,7 @@ int p2 = 0;
 
 int AIr = 888;
 int AIc = 888;
+
 
 bool turn = true;
 
@@ -57,6 +57,7 @@ std::string RandName[] = {"Santa", "Durden", "Morty", "Rick", "Marty F", "Luke",
 
 int * c;
 int * AI;
+int * AI2;
 
 int autoRow = 0;
 int autoCol = 0;
@@ -89,42 +90,43 @@ int main(int argc, const char * argv[]) {
     
     while(1)
     {
-        while (1)
-        {
-            c = userInput(boardSize);
-            if (c[0] <= boardSize - 1 && c[1] <= boardSize - 1)
-            {
-                break;
-            }
-            else if (player2[c[0]][c[1]] == 2 || player2[c[0]][c[1]] == 3)
-            {
-                gMessage = "Space Already Played";
-                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
-            }
-            else if (c[0] == 999 || c[1] == 999)
-            {
-                gMessage = "Invalid Entry";
-                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
-            }
-            else
-            {
-                gMessage = "Out of Bounds. Try Again.";
-                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
-            }
-        }
-//        c = new int[2];
-//
-//        c[0] = autoRow;
-//        c[1] = autoCol;
-//
-//        autoCol++;
-//        if (autoCol == 10)
+//        while (1)
 //        {
-//            autoRow++;
+//            c = userInput(boardSize);
+//            if (c[0] <= boardSize - 1 && c[1] <= boardSize - 1)
+//            {
+//                break;
+//            }
+//            else if (c[0] == 999 || c[1] == 999)
+//            {
+//                gMessage = "Invalid Entry";
+//                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
+//            }
+//            else if (player2[c[0]][c[1]] == 2 || player2[c[0]][c[1]] == 3)
+//            {
+//                gMessage = "Space Already Played";
+//                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
+//            }
+//            else
+//            {
+//                gMessage = "Out of Bounds. Try Again.";
+//                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
+//            }
 //        }
-//        autoCol %= 10;
-//
-//        usleep(0.5 * 1000000);
+        c = new int[2];
+
+        c[0] = autoRow;
+        c[1] = autoCol;
+
+        autoCol++;
+        if (autoCol == boardSize)
+        {
+            autoRow++;
+        }
+        autoCol %= boardSize;
+
+        usleep(0.1 * 1000000);
+
         turn = true;
         updateBoard(player2, c[0], c[1], boardSize);
         updateScreen(gMessage, player1, player2, p1, p2, boardSize);
@@ -132,18 +134,21 @@ int main(int argc, const char * argv[]) {
         turn = false;
         updateBoard(player1, AI[0], AI[1], boardSize);
 //        gMessage2 = std::to_string(AIr) + " " + std::to_string(AIc);
-        usleep(0.5 * 1000000);
+//        usleep(0.5 * 1000000);
         updateScreen(gMessage, player1, player2, p1, p2, boardSize);
         
         if (p1 == numberShips )
         {
             ClearScreen();
-            std::cout << "Done" << std::endl;
+            std::cout << Name1 + " Won!!! Everyone laugh at " + Name2 + "."<< std::endl;
+
             break;
         }
         else if (p2 == numberShips)
         {
-            
+            ClearScreen();
+            std::cout << Name2 + " Won!!! I guess Elon was right..." << std::endl;
+            break;
         }
     }
     return 0;
@@ -652,20 +657,23 @@ void updateBoard(int** board, int row, int col, int size) // need to add sides
 
 int * AIcoordinates(int ** board, int size, std::string message)
 {
+    int count = 0;
     if (AIr == 888 && AIc == 888)
     {
-        AIr = rand() % (size-1);
-        AIc = rand() % (size-1);
+        AIr = rand() % size;
+        AIc = rand() % size;
     }
     while(1)
     {
+        count = 0;
         if (message == "Near Miss")
         {
             if (AIr >= 1 && AIr <= (size - 2) && AIc >= 1 && AIc <= (size - 2))
             {
+                count = 0;
                 while(1)
                 {
-                    int count = 0;
+                    std::cout<<"1 " + std::to_string(AIr) + " " + std::to_string(AIc)<<std::endl;
                     AIr = rand() % 3 + (AIr-1);
                     AIc = rand() % 3 + (AIc-1);
                     if (board[AIr][AIc] == 0 || board[AIr][AIc] == 1)
@@ -674,7 +682,6 @@ int * AIcoordinates(int ** board, int size, std::string message)
                     }
                     else if (count == 9)
                     {
-                        count = 0;
                         break;
                     }
                     else
@@ -685,9 +692,9 @@ int * AIcoordinates(int ** board, int size, std::string message)
                             }
             else if (AIr == 0 && AIc == 0)
             {
+                count = 0;
                 while(1)
                 {
-                    int count = 0;
                     AIr = rand() % 2 + AIr;
                     AIc = rand() % 2 + AIc;
                     if (board[AIr][AIc] == 0 || board[AIr][AIc] == 1)
@@ -696,20 +703,20 @@ int * AIcoordinates(int ** board, int size, std::string message)
                     }
                     else if (count == 4)
                     {
-                        count = 0;
                         break;
                     }
                     else
                     {
                         count++;
                     }
+                    std::cout<<"2 " + std::to_string(AIr) + " " + std::to_string(AIc)<<std::endl;
                 }
             }
             else if (AIr == (size - 1) && AIc == 0)
             {
+                count = 0;
                 while(1)
                 {
-                    int count = 0;
                     AIr = rand() % 2 + (AIr-1);
                     AIc = rand() % 2 + (AIc);
                     if (board[AIr][AIc] == 0 || board[AIr][AIc] == 1)
@@ -718,20 +725,20 @@ int * AIcoordinates(int ** board, int size, std::string message)
                     }
                     else if (count == 4)
                     {
-                        count = 0;
                         break;
                     }
                     else
                     {
                         count++;
                     }
+                    std::cout<<"3 " + std::to_string(AIr) + " " + std::to_string(AIc)<<std::endl;
                 }
             }
             else if (AIr == 0 && AIc == (size - 1))
             {
+                count = 0;
                 while(1)
                 {
-                    int count = 0;
                     AIr = rand() % 2 + AIr;
                     AIc = rand() % 2 + (AIc-1);
                     if (board[AIr][AIc] == 0 || board[AIr][AIc] == 1)
@@ -740,20 +747,20 @@ int * AIcoordinates(int ** board, int size, std::string message)
                     }
                     else if (count == 4)
                     {
-                        count = 0;
                         break;
                     }
                     else
                     {
                         count++;
                     }
+                    std::cout<<"4 " + std::to_string(AIr) + " " + std::to_string(AIc)<<std::endl;
                 }
             }
             else if (AIr == (size - 1) && AIc == (size - 1))
             {
+                count = 0;
                 while(1)
                 {
-                    int count = 0;
                     AIr = rand() % 2 + (AIr-1);
                     AIc = rand() % 2 + (AIc-1);
                     if (board[AIr][AIc] == 0 || board[AIr][AIc] == 1)
@@ -769,13 +776,15 @@ int * AIcoordinates(int ** board, int size, std::string message)
                     {
                         count++;
                     }
+                    std::cout<<"5 " + std::to_string(AIr) + " " + std::to_string(AIc)<<std::endl;
                 }
             }
             else if (AIr == 0 && AIc != 0 && AIc != (size - 1)) // rows top and bottom
             {
+                count = 0;
                 while(1)
                 {
-                    int count = 0;
+                    
                     AIr = rand() % 2 + AIr;
                     AIc = rand() % 3 + (AIc - 1);
                     if (board[AIr][AIc] == 0 || board[AIr][AIc] == 1)
@@ -784,20 +793,21 @@ int * AIcoordinates(int ** board, int size, std::string message)
                     }
                     else if (count == 6)
                     {
-                        count = 0;
                         break;
                     }
                     else
                     {
                         count++;
                     }
+                    std::cout<<"6 " + std::to_string(AIr) + " " + std::to_string(AIc)<<std::endl;
                 }
             }
             else if (AIr == (size - 1) && AIc != 0 && AIc != (size - 1))
             {
+                count = 0;
                 while(1)
                 {
-                    int count = 0;
+                    
                     AIr = rand() % 2 + (AIr-1);
                     AIc = rand() % 3 + (AIc-1);
                     if (board[AIr][AIc] == 0 || board[AIr][AIc] == 1)
@@ -806,20 +816,20 @@ int * AIcoordinates(int ** board, int size, std::string message)
                     }
                     else if (count == 6)
                     {
-                        count = 0;
                         break;
                     }
                     else
                     {
                         count++;
                     }
+                    std::cout<<"7 " + std::to_string(AIr) + " " + std::to_string(AIc)<<std::endl;
                 }
             }
             else if (AIc == 0 && AIr != 0 && AIc != (size - 1))
             {
+                count = 0;
                 while(1)
                 {
-                    int count = 0;
                     AIr = rand() % 3 + (AIr-1);
                     AIc = rand() % 2 + (AIc);
                     if (board[AIr][AIc] == 0 || board[AIr][AIc] == 1)
@@ -828,20 +838,21 @@ int * AIcoordinates(int ** board, int size, std::string message)
                     }
                     else if (count == 6)
                     {
-                        count = 0;
                         break;
                     }
                     else
                     {
                         count++;
                     }
+                    std::cout<<"8 " + std::to_string(AIr) + " " + std::to_string(AIc)<<std::endl;
                 }
             }
             else if (AIc == (size - 1) && AIr != 0 && AIc != (size - 1))
             {
+                count = 0;
                 while(1)
                 {
-                    int count = 0;
+                    
                     AIr = rand() % 3 + (AIr-1);
                     AIc = rand() % 2 + (AIc-1);
                     if (board[AIr][AIc] == 0 || board[AIr][AIc] == 1)
@@ -850,13 +861,13 @@ int * AIcoordinates(int ** board, int size, std::string message)
                     }
                     else if (count == 6)
                     {
-                        count = 0;
                         break;
                     }
                     else
                     {
                         count++;
                     }
+                    std::cout<<"9 " + std::to_string(AIr) + " " + std::to_string(AIc)<<std::endl;
                 }
             }
         }
@@ -864,86 +875,22 @@ int * AIcoordinates(int ** board, int size, std::string message)
         {
             AIr = rand() % (size-1);
             AIc = rand() % (size-1);
+            std::cout<<"Else " + std::to_string(AIr) + " " + std::to_string(AIc)<<std::endl;
         }
         if (board[AIr][AIc] == 0 || board[AIr][AIc] == 1)
         {
             break;
+        }
+        std::cout<<"endless " + std::to_string(AIr) + " " + std::to_string(AIc)<<std::endl;
+        count++;
+        if (count == 1)
+        {
+            AIr = rand() % (size-1);
+            AIc = rand() % (size-1);
         }
     }
     int* AIC = new int[2] { AIr, AIc };
     return AIC;
 }
 
-int * AIcoordinates2(int ** board, int size, std::string message)
-{
-    do
-    {
-        if (message == "Near Miss")
-        {
-            if (AIr >= 1 && AIr <= (size - 2) && AIc >= 1 && AIc <= (size - 2))
-            {
-                AIr = rand() % 3 + (AIr-1);
-                AIc = rand() % 3 + (AIc-1);
-                break;
-            }
-            else if (AIr == 0 && AIc == 0)
-            {
-                AIr = rand() % 2 + AIr;
-                AIc = rand() % 2 + AIc;
-                break;
-            }
-            else if (AIr == (size - 1) && AIc == 0)
-            {
-                AIr = rand() % 2 + AIr;
-                AIc = rand() % 2 + (AIc-1);
-                break;
-            }
-            else if (AIr == 0 && AIc == (size - 1))
-            {
-                AIr = rand() % 2 + AIr;
-                AIc = rand() % 2 + (AIc-1);
-                break;
-            }
-            else if (AIr == (size - 1) && AIc == (size - 1))
-            {
-               AIr = rand() % 2 + (AIr-1);
-               AIc = rand() % 2 + (AIc-1);
-               break;
-            }
-            else if (AIr == 0 && AIc != 0 && AIc != (size - 1)) // rows top and bottom
-            {
-                AIr = rand() % 2 + AIr;
-                AIc = rand() % 3 + (AIc - 1);
-                break;
-            }
-            else if (AIr == (size - 1) && AIc != 0 && AIc != (size - 1))
-            {
-                AIr = rand() % 2 + (AIr-1);
-                AIc = rand() % 3 + (AIc-1);
-                break;
-            }
-            else if (AIc == 0 && AIr != 0 && AIc != (size - 1))
-            {
-                AIr = rand() % 3 + (AIr-1);
-                AIc = rand() % 2 + (AIc);
-                break;
-            }
-            else if (AIc == (size - 1) && AIr != 0 && AIc != (size - 1))
-            {
-                AIr = rand() % 3 + (AIr-1);
-                AIc = rand() % 2 + (AIc-1);
-                break;
-            }
-        }
-        else
-        {
-            AIr = rand() % (size-1);
-            AIc = rand() % (size-1);
-            break;
-        }
-    }
-    while (board[AIr][AIc] != 0 || board[AIr][AIc] != 1);
-    int* AIC = new int[2] { AIr, AIc };
-    return AIC;
-}
 
