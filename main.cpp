@@ -90,40 +90,40 @@ int main(int argc, const char * argv[]) {
     
     while(1)
     {
-//        while (1)
-//        {
-//            c = userInput(boardSize);
-//            if (c[0] <= boardSize - 1 && c[1] <= boardSize - 1)
-//            {
-//                break;
-//            }
-//            else if (c[0] == 999 || c[1] == 999)
-//            {
-//                gMessage = "Invalid Entry";
-//                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
-//            }
-//            else if (player2[c[0]][c[1]] == 2 || player2[c[0]][c[1]] == 3)
-//            {
-//                gMessage = "Space Already Played";
-//                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
-//            }
-//            else
-//            {
-//                gMessage = "Out of Bounds. Try Again.";
-//                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
-//            }
-//        }
-        c = new int[2];
-
-        c[0] = autoRow;
-        c[1] = autoCol;
-
-        autoCol++;
-        if (autoCol == boardSize)
+        while (1)
         {
-            autoRow++;
+            c = userInput(boardSize);
+            if (c[0] <= boardSize - 1 && c[1] <= boardSize - 1)
+            {
+                break;
+            }
+            else if (c[0] == 999 || c[1] == 999)
+            {
+                gMessage = "Invalid Entry";
+                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
+            }
+            else if (player2[c[0]][c[1]] == 2 || player2[c[0]][c[1]] == 3)
+            {
+                gMessage = "Space Already Played";
+                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
+            }
+            else
+            {
+                gMessage = "Out of Bounds. Try Again.";
+                updateScreen(gMessage, player1, player2, p1, p2, boardSize);
+            }
         }
-        autoCol %= boardSize;
+//        c = new int[2];
+//
+//        c[0] = autoRow;
+//        c[1] = autoCol;
+//
+//        autoCol++;
+//        if (autoCol == boardSize)
+//        {
+//            autoRow++;
+//        }
+//        autoCol %= boardSize;
 
         usleep(0.1 * 1000000);
 
